@@ -5,8 +5,9 @@ import { MOCK_PROJECTS } from '@/lib/data/mock';
 import { cn } from '@/lib/utils';
 import { useAppStore } from '@/lib/store';
 import type { PipelineProject } from '@/lib/types';
-import { Briefcase, TrendingUp, MessageCircle, Loader2, Sparkles } from 'lucide-react';
+import { Briefcase, TrendingUp, MessageCircle, Loader2, Sparkles, Target } from 'lucide-react';
 import { AreaChart, Area, ResponsiveContainer } from 'recharts';
+import { REGEN10_DIMENSIONS } from '@/lib/data/mock';
 
 const STAGE_COLORS: Record<string, string> = {
   Screening: 'bg-earth-200 text-earth-700',
@@ -20,6 +21,14 @@ const TYPE_COLORS: Record<string, string> = {
   Fund: 'bg-water-600/10 text-water-600',
   'Input company': 'bg-moss-100 text-moss-600',
   Infrastructure: 'bg-earth-200 text-earth-600',
+};
+
+// Regen10 dimensions relevant to each project type
+const PROJECT_TYPE_DIMENSIONS: Record<string, string[]> = {
+  Farm: ['d01', 'd02', 'd03', 'd04', 'd05', 'd06', 'd08', 'd10'],
+  Fund: ['d01', 'd02', 'd03', 'd04', 'd06', 'd07', 'd08', 'd10'],
+  'Input company': ['d03', 'd06', 'd10', 'd11'],
+  Infrastructure: ['d04', 'd07', 'd10', 'd12'],
 };
 
 export function PipelineModule() {
@@ -47,7 +56,7 @@ export function PipelineModule() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          messages: [{ role: 'user', content: `Analyze this investment opportunity: ${project.name} (${project.type}) in ${project.state}. Stage: ${project.stage}. Impact score: ${project.impactScore}/10. Description: ${project.description}. Provide a brief impact assessment covering relevant Regen 10 Outcomes, risk indicators, and what additional data would strengthen the analysis.` }],
+          messages: [{ role: 'user', content: `Analyze this investment opportunity: ${project.name} (${project.type}) in ${project.state}. Stage: ${project.stage}. Impact score: ${project.impactScore}/10. Description: ${project.description}. Provide a brief impact assessment covering relevant Regen10 Outcomes Framework dimensions, risk indicators, and what additional data would strengthen the analysis.` }],
           context: `Pipeline project: ${project.name}`,
         }),
       });
@@ -64,7 +73,7 @@ export function PipelineModule() {
         }
       }
     } catch {
-      setAiAnalysis(`**Impact Assessment for ${project.name}**\n\nThis ${project.type.toLowerCase()} in ${project.state} at the ${project.stage.toLowerCase()} stage presents a ${project.impactScore > 7.5 ? 'strong' : 'moderate'} alignment with DiversiFund's regenerative agriculture thesis.\n\n**Relevant Regen 10 Outcomes:**\n- Soil organic matter improvement (f01)\n- Cover crop adoption acceleration (f04)\n- Net farm income enhancement (f08)\n\n**Risk Indicators:**\n- Market concentration in ${project.state} region\n- Scaling challenges beyond initial pilot\n\n**Data Needs:**\n- Field-level soil test data from pilot sites\n- Farmer retention and satisfaction metrics\n- Detailed unit economics at scale`);
+      setAiAnalysis(`**Impact Assessment for ${project.name}**\n\nThis ${project.type.toLowerCase()} in ${project.state} at the ${project.stage.toLowerCase()} stage presents a ${project.impactScore > 7.5 ? 'strong' : 'moderate'} alignment with DiversiFund's regenerative agriculture thesis.\n\n**Relevant Regen10 Outcomes Framework dimensions:**\n- Soil organic matter improvement (f01)\n- Cover crop adoption acceleration (f04)\n- Net farm income enhancement (f08)\n\n**Risk Indicators:**\n- Market concentration in ${project.state} region\n- Scaling challenges beyond initial pilot\n\n**Data Needs:**\n- Field-level soil test data from pilot sites\n- Farmer retention and satisfaction metrics\n- Detailed unit economics at scale`);
     } finally {
       setLoadingAI(false);
     }
@@ -186,6 +195,32 @@ export function PipelineModule() {
 
             {/* Description */}
             <p className="text-sm text-earth-600 leading-relaxed">{selectedProject.description}</p>
+
+            {/* Outcomes Coverage — Regen10 dimension pills */}
+            <div className="bg-white border border-earth-200 rounded-lg p-4">
+              <div className="text-[10px] font-semibold uppercase tracking-widest text-earth-500 mb-2 flex items-center gap-1.5">
+                <Target className="w-3 h-3" />
+                Outcomes Coverage
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {REGEN10_DIMENSIONS.map((dim) => {
+                  const isRelevant = (PROJECT_TYPE_DIMENSIONS[selectedProject.type] || []).includes(dim.id);
+                  return (
+                    <span
+                      key={dim.id}
+                      className="inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-full transition-opacity"
+                      style={{
+                        backgroundColor: dim.color,
+                        color: 'white',
+                        opacity: isRelevant ? 1 : 0.3,
+                      }}
+                    >
+                      {dim.name}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
 
             {/* Revenue sparkline */}
             {selectedProject.revenue && (

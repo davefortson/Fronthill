@@ -89,7 +89,7 @@ export function ChatDrawer() {
           <div className="text-center text-earth-400 text-sm mt-8 space-y-2">
             <Sparkles className="w-8 h-8 mx-auto text-earth-300" />
             <p className="font-medium text-earth-500">Impact Intelligence Assistant</p>
-            <p className="text-xs max-w-[280px] mx-auto">Ask about regions, projects, investors, or the Regen 10 Outcomes framework.</p>
+            <p className="text-xs max-w-[280px] mx-auto">Ask about regions, projects, investors, or the Regen10 Outcomes Framework.</p>
           </div>
         )}
         {messages.map((msg, i) => (

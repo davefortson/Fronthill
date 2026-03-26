@@ -5,6 +5,8 @@ import { useAppStore } from '@/lib/store';
 import { cn, formatNumber } from '@/lib/utils';
 import { Zap, Loader2 } from 'lucide-react';
 import type { RegionData, ScenarioResponse } from '@/lib/types';
+import { INTERVENTION_DIMENSIONS } from '@/lib/types';
+import { REGEN10_DIMENSIONS } from '@/lib/data/mock';
 
 const INTERVENTIONS = [
   { value: 'cover_crop', label: 'Cover crop adoption' },
@@ -167,6 +169,28 @@ export function ScenarioBuilder({ region }: ScenarioBuilderProps) {
       {result && (
         <div className="mt-4 space-y-3">
           <p className="text-sm text-earth-700 leading-relaxed">{result.summary}</p>
+
+          {/* Outcomes affected — dimension badges */}
+          <div>
+            <div className="text-[10px] font-semibold uppercase tracking-widest text-earth-500 mb-1.5">
+              Outcomes Affected
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {(INTERVENTION_DIMENSIONS[interventionType] || []).map((dimId) => {
+                const dim = REGEN10_DIMENSIONS.find((d) => d.id === dimId);
+                if (!dim) return null;
+                return (
+                  <span
+                    key={dim.id}
+                    className="inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full text-white"
+                    style={{ backgroundColor: dim.color }}
+                  >
+                    {dim.name}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
 
           <div className="grid grid-cols-2 gap-2">
             <PredictionCard

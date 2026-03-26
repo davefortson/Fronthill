@@ -1,0 +1,127 @@
+{
+  "framework": "Regen10 Outcomes Framework",
+  "version": "2026",
+  "description": "A global standard with 12 dimensions for evaluating landscape-level regenerative impact.",
+  "dimensions": [
+    {
+      "id": "d01",
+      "name": "Air & Climate",
+      "color": "#5B9BD5",
+      "farm_outcome": "Reduce GHG emissions and increase carbon sequestration per acre",
+      "landscape_outcome": "Improve regional air quality and climate resilience metrics",
+      "indicators": ["GHG emissions (scope 1+2)", "Carbon sequestration rate", "Air quality index"],
+      "data_sources": ["NOAA CDO", "EPA AQI", "USDA COMET-Planner"],
+      "api_available": true
+    },
+    {
+      "id": "d02",
+      "name": "Biodiversity",
+      "color": "#70AD47",
+      "farm_outcome": "Increase species richness and habitat connectivity on-farm",
+      "landscape_outcome": "Restore biodiversity corridor integrity and pollinator habitat coverage",
+      "indicators": ["Bird species richness", "Pollinator habitat acres", "Corridor integrity index"],
+      "data_sources": ["eBird", "USGS GAP", "USFWS NWI"],
+      "api_available": false
+    },
+    {
+      "id": "d03",
+      "name": "Soil",
+      "color": "#8B6914",
+      "farm_outcome": "Build soil organic matter and improve water infiltration",
+      "landscape_outcome": "Increase regional soil carbon stocks and reduce erosion rates",
+      "indicators": ["Soil organic matter %", "Water infiltration rate", "Erosion rate"],
+      "data_sources": ["USDA SSURGO", "NRCS Soil Survey"],
+      "api_available": true
+    },
+    {
+      "id": "d04",
+      "name": "Water",
+      "color": "#4472C4",
+      "farm_outcome": "Improve on-farm water retention and reduce nutrient runoff",
+      "landscape_outcome": "Improve watershed water quality and wetland coverage across the region",
+      "indicators": ["Watershed quality (% Good)", "Nitrogen loading", "Wetland coverage"],
+      "data_sources": ["EPA ATTAINS", "USGS SPARROW", "USFWS NWI"],
+      "api_available": true
+    },
+    {
+      "id": "d05",
+      "name": "Livestock",
+      "color": "#C55A11",
+      "farm_outcome": "Improve animal welfare and integrate managed grazing",
+      "landscape_outcome": "Reduce methane intensity and improve grassland health regionally",
+      "indicators": ["Managed grazing adoption", "Methane intensity", "Grassland health index"],
+      "data_sources": ["USDA NASS", "EPA GHG Inventory"],
+      "api_available": true
+    },
+    {
+      "id": "d06",
+      "name": "Crops & Pasture",
+      "color": "#548235",
+      "farm_outcome": "Diversify rotations and increase cover crop adoption",
+      "landscape_outcome": "Increase regional crop diversity index and regenerative practice adoption",
+      "indicators": ["Crop diversity (Shannon index)", "Cover crop %", "Regen practice adoption"],
+      "data_sources": ["USDA NASS", "USDA Census of Agriculture"],
+      "api_available": true
+    },
+    {
+      "id": "d07",
+      "name": "Community",
+      "color": "#BF8F00",
+      "farm_outcome": "Strengthen food security contribution and local food integration",
+      "landscape_outcome": "Strengthen local food economy and community land ownership",
+      "indicators": ["Local food sales/capita", "Community land ownership %", "Food security index"],
+      "data_sources": ["USDA Ag Census", "USDA ERS"],
+      "api_available": true
+    },
+    {
+      "id": "d08",
+      "name": "Farmers & Workers",
+      "color": "#ED7D31",
+      "farm_outcome": "Improve farmworker wages and beginning farmer access",
+      "landscape_outcome": "Increase farm viability and beginning farmer entry rates regionally",
+      "indicators": ["Net farm income", "Farmworker wages", "Beginning farmer count"],
+      "data_sources": ["USDA NASS", "BLS"],
+      "api_available": true
+    },
+    {
+      "id": "d09",
+      "name": "Governance",
+      "color": "#7030A0",
+      "farm_outcome": "Increase producer decision autonomy and cooperative participation",
+      "landscape_outcome": "Strengthen farmer-led governance and cooperative structures regionally",
+      "indicators": ["Producer autonomy score", "Cooperative membership", "Governance participation"],
+      "data_sources": ["USDA Rural Development", "Survey data"],
+      "api_available": false
+    },
+    {
+      "id": "d10",
+      "name": "Economics & Finance",
+      "color": "#2E75B6",
+      "farm_outcome": "Improve net farm income and revenue diversification",
+      "landscape_outcome": "Increase regional farm profitability and economic resilience",
+      "indicators": ["Net farm income", "Revenue diversification", "Gross margins"],
+      "data_sources": ["USDA ERS", "USDA NASS"],
+      "api_available": true
+    },
+    {
+      "id": "d11",
+      "name": "Agricultural Inputs",
+      "color": "#FF6B6B",
+      "farm_outcome": "Reduce synthetic fertilizer and pesticide dependency",
+      "landscape_outcome": "Decrease aggregate chemical input loading across the region",
+      "indicators": ["Synthetic fertilizer use (lbs N/acre)", "Pesticide load index", "Input cost ratio"],
+      "data_sources": ["USDA NASS", "EPA"],
+      "api_available": true
+    },
+    {
+      "id": "d12",
+      "name": "Infrastructure",
+      "color": "#A5A5A5",
+      "farm_outcome": "Improve energy self-sufficiency and on-farm processing capacity",
+      "landscape_outcome": "Strengthen regional food processing and renewable energy infrastructure",
+      "indicators": ["Energy self-sufficiency %", "Processing capacity", "Cold chain coverage"],
+      "data_sources": ["USDA Rural Development", "EIA"],
+      "api_available": false
+    }
+  ]
+}

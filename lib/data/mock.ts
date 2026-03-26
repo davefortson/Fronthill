@@ -1,4 +1,20 @@
-import type { RegionData, PipelineProject, Investor } from '@/lib/types';
+import type { RegionData, PipelineProject, Investor, Regen10Framework } from '@/lib/types';
+
+// Regen10 framework dimensions with colors (inline for SSR/build compatibility)
+export const REGEN10_DIMENSIONS = [
+  { id: 'd01', name: 'Air & Climate', color: '#5B9BD5', api_available: true, data_source: 'NOAA CDO' },
+  { id: 'd02', name: 'Biodiversity', color: '#70AD47', api_available: false, data_source: 'USGS GAP' },
+  { id: 'd03', name: 'Soil', color: '#8B6914', api_available: true, data_source: 'USDA SSURGO' },
+  { id: 'd04', name: 'Water', color: '#4472C4', api_available: true, data_source: 'EPA ATTAINS' },
+  { id: 'd05', name: 'Livestock', color: '#C55A11', api_available: true, data_source: 'USDA NASS' },
+  { id: 'd06', name: 'Crops & Pasture', color: '#548235', api_available: true, data_source: 'USDA NASS' },
+  { id: 'd07', name: 'Community', color: '#BF8F00', api_available: true, data_source: 'USDA Ag Census' },
+  { id: 'd08', name: 'Farmers & Workers', color: '#ED7D31', api_available: true, data_source: 'USDA NASS' },
+  { id: 'd09', name: 'Governance', color: '#7030A0', api_available: false, data_source: 'Survey data' },
+  { id: 'd10', name: 'Economics & Finance', color: '#2E75B6', api_available: true, data_source: 'USDA ERS' },
+  { id: 'd11', name: 'Agricultural Inputs', color: '#FF6B6B', api_available: true, data_source: 'USDA NASS' },
+  { id: 'd12', name: 'Infrastructure', color: '#A5A5A5', api_available: false, data_source: 'USDA Rural Development' },
+] as const;
 
 // ── Region Mock Data ──────────────────────────────────────────
 export const MOCK_UPPER_MIDWEST: RegionData = {
@@ -244,20 +260,96 @@ export const MOCK_FUNNEL = [
   { stage: 'Committed', value: 8 },
 ];
 
-// ── Landscape Outcomes Status (for region analysis) ──────────────
+// ── Regen10 Dimension Status (for region analysis) ──────────────
+export function getDimensionStatus(region: RegionData) {
+  return REGEN10_DIMENSIONS.map((dim) => {
+    let status: 'good' | 'moderate' | 'poor' = 'moderate';
+    let trend: 'improving' | 'declining' | 'stable' | 'above' | 'below' = 'stable';
+    let landscapeOutcome = '';
+
+    switch (dim.id) {
+      case 'd01': // Air & Climate
+        status = Math.abs(region.precipAnomaly) < 10 ? 'good' : Math.abs(region.precipAnomaly) < 20 ? 'moderate' : 'poor';
+        trend = region.precipAnomaly > 0 ? 'above' : 'below';
+        landscapeOutcome = 'Improve regional air quality and climate resilience';
+        break;
+      case 'd02': // Biodiversity
+        status = 'moderate';
+        trend = 'declining';
+        landscapeOutcome = 'Restore biodiversity corridor integrity and habitat';
+        break;
+      case 'd03': // Soil
+        status = region.soilOM > 4 ? 'good' : region.soilOM > 2.5 ? 'moderate' : 'poor';
+        trend = 'improving';
+        landscapeOutcome = 'Increase regional soil carbon stocks, reduce erosion';
+        break;
+      case 'd04': // Water
+        status = region.watershedQuality.good > 50 ? 'good' : region.watershedQuality.good > 30 ? 'moderate' : 'poor';
+        trend = 'stable';
+        landscapeOutcome = 'Improve watershed water quality and wetland coverage';
+        break;
+      case 'd05': // Livestock
+        status = 'moderate';
+        trend = 'stable';
+        landscapeOutcome = 'Reduce methane intensity, improve grassland health';
+        break;
+      case 'd06': // Crops & Pasture
+        status = Object.keys(region.crops).length > 4 ? 'good' : Object.keys(region.crops).length > 2 ? 'moderate' : 'poor';
+        trend = 'improving';
+        landscapeOutcome = 'Increase crop diversity and regen practice adoption';
+        break;
+      case 'd07': // Community
+        status = 'moderate';
+        trend = 'improving';
+        landscapeOutcome = 'Strengthen local food economy and land ownership';
+        break;
+      case 'd08': // Farmers & Workers
+        status = 'moderate';
+        trend = 'stable';
+        landscapeOutcome = 'Increase farm viability and farmer entry rates';
+        break;
+      case 'd09': // Governance
+        status = 'moderate';
+        trend = 'stable';
+        landscapeOutcome = 'Strengthen farmer-led governance structures';
+        break;
+      case 'd10': // Economics & Finance
+        status = 'moderate';
+        trend = 'stable';
+        landscapeOutcome = 'Increase regional farm profitability, economic resilience';
+        break;
+      case 'd11': // Agricultural Inputs
+        status = region.nitrogenLoading > 15 ? 'poor' : region.nitrogenLoading > 10 ? 'moderate' : 'good';
+        trend = 'stable';
+        landscapeOutcome = 'Decrease aggregate chemical input loading regionally';
+        break;
+      case 'd12': // Infrastructure
+        status = 'moderate';
+        trend = 'stable';
+        landscapeOutcome = 'Strengthen food processing and renewable energy infra';
+        break;
+    }
+
+    return {
+      id: dim.id,
+      name: dim.name,
+      color: dim.color,
+      status,
+      trend,
+      landscapeOutcome,
+      dataSource: dim.data_source,
+      apiAvailable: dim.api_available,
+    };
+  });
+}
+
+// Legacy compat wrapper
 export function getLandscapeOutcomeStatus(region: RegionData) {
-  return [
-    { id: 'l01', name: 'Watershed water quality', status: region.watershedQuality.good > 50 ? 'good' : region.watershedQuality.good > 30 ? 'moderate' : 'poor', trend: 'stable' as const, source: 'EPA ATTAINS' },
-    { id: 'l02', name: 'Regional soil carbon stock', status: region.soilOM > 4 ? 'good' : region.soilOM > 2.5 ? 'moderate' : 'poor', trend: 'improving' as const, source: 'USDA SSURGO' },
-    { id: 'l03', name: 'Precipitation patterns', status: Math.abs(region.precipAnomaly) < 10 ? 'good' : Math.abs(region.precipAnomaly) < 20 ? 'moderate' : 'poor', trend: region.precipAnomaly > 0 ? 'above' as const : 'below' as const, source: 'NOAA CDO' },
-    { id: 'l04', name: 'Drought frequency', status: region.precipAnomaly < -15 ? 'poor' : region.precipAnomaly < 0 ? 'moderate' : 'good', trend: 'stable' as const, source: 'NOAA USDM' },
-    { id: 'l05', name: 'Biodiversity corridor integrity', status: 'moderate', trend: 'declining' as const, source: 'Modeled' },
-    { id: 'l06', name: 'Wetland coverage', status: 'moderate', trend: 'stable' as const, source: 'USFWS NWI' },
-    { id: 'l07', name: 'Nitrogen loading', status: region.nitrogenLoading > 15 ? 'poor' : region.nitrogenLoading > 10 ? 'moderate' : 'good', trend: 'stable' as const, source: 'USGS SPARROW' },
-    { id: 'l08', name: 'Crop diversity index', status: Object.keys(region.crops).length > 4 ? 'good' : Object.keys(region.crops).length > 2 ? 'moderate' : 'poor', trend: 'improving' as const, source: 'USDA NASS' },
-    { id: 'l09', name: 'Regen practice adoption', status: region.regenPracticeAdoption > 0.25 ? 'good' : region.regenPracticeAdoption > 0.15 ? 'moderate' : 'poor', trend: 'improving' as const, source: 'USDA NASS' },
-    { id: 'l10', name: 'Farm viability', status: 'moderate', trend: 'stable' as const, source: 'USDA NASS' },
-    { id: 'l11', name: 'Local food economy', status: 'moderate', trend: 'improving' as const, source: 'USDA Ag Census' },
-    { id: 'l12', name: 'Climate resilience', status: Math.abs(region.precipAnomaly) < 15 && region.soilOM > 3 ? 'good' : 'moderate', trend: 'stable' as const, source: 'Composite' },
-  ];
+  return getDimensionStatus(region).map((d) => ({
+    id: d.id,
+    name: d.name,
+    status: d.status,
+    trend: d.trend,
+    source: d.dataSource,
+  }));
 }

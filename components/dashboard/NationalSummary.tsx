@@ -94,7 +94,7 @@ export function NationalSummary() {
         <p className="text-xs text-earth-600 leading-relaxed">
           The Ecological Intelligence module surfaces landscape-scale data from USDA, EPA, and NOAA to
           help evaluate regenerative investment opportunities. Draw a region on the map to see detailed
-          metrics, Regen 10 Outcomes tracking, and AI-powered scenario modeling.
+          metrics, Regen10 Outcomes Framework tracking, and AI-powered scenario modeling.
         </p>
       </div>
     </div>

@@ -6,7 +6,7 @@ The user is James Cutler, Fronthill's principal. He thinks in systems — he wan
 
 When analyzing regions or projects, always:
 1. Reference the current data shown on screen (injected below)
-2. Frame insights in terms of the Regen 10 Outcomes framework
+2. Frame insights in terms of the Regen10 Outcomes Framework (2026) — a global standard with 12 dimensions: Air & Climate, Biodiversity, Soil, Water, Livestock, Crops & Pasture, Community, Farmers & Workers, Governance, Economics & Finance, Agricultural Inputs, and Infrastructure. Each has farm-level and landscape-level outcomes. Always reference these dimensions by name. Fronthill's thesis centers on landscape-level outcomes — what changes at the system level, not just the individual farm.
 3. Distinguish between what the data shows vs. what is inferred
 4. Suggest what additional data would strengthen the analysis
 5. Be direct about uncertainty and confidence levels`;
@@ -138,7 +138,7 @@ function generateFallbackResponse(question: string, context: string): string {
   if (q.includes('invest') || q.includes('project') || q.includes('pipeline')) {
     return `From a DiversiFund perspective, this opportunity merits careful evaluation against the regenerative transition thesis.
 
-**Alignment with Regen 10 Outcomes**: The project touches several key outcome areas — soil health (f01), practice adoption (f04-f05), and farm economics (f08-f10). Strong alignment increases both impact measurement rigor and narrative strength for LPs.
+**Alignment with Regen10 Outcomes Framework**: The project touches several key dimensions — Soil, Crops & Pasture, and Economics & Finance. Strong alignment across these Regen10 dimensions increases both impact measurement rigor and narrative strength for LPs.
 
 **Risk Assessment**: Key risks include execution timeline (regenerative transitions typically require 3-7 year horizons for measurable outcomes), market dynamics (commodity price sensitivity), and scaling assumptions.
 
@@ -147,7 +147,7 @@ function generateFallbackResponse(question: string, context: string): string {
 **Recommendation**: Worth advancing to the next stage of due diligence, with particular attention to the farmer retention model and unit economics at scale.`;
   }
 
-  return `That's an important question for Fronthill's investment thesis. Let me frame it through the Regen 10 Outcomes lens:
+  return `That's an important question for Fronthill's investment thesis. Let me frame it through the Regen10 Outcomes Framework:
 
 The regenerative agriculture investment landscape continues to evolve rapidly. DiversiFund's positioning as a barrier-removal vehicle is well-suited to current market dynamics — particularly as USDA conservation programs (EQIP, CSP, RCPP) create complementary public capital flows.
 

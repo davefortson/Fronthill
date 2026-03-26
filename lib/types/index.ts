@@ -95,7 +95,34 @@ export interface Investor {
   lastContact: string;
 }
 
-// Regen 10 Outcomes
+// Regen10 Outcomes Framework (2026)
+export interface Regen10Dimension {
+  id: string;
+  name: string;
+  color: string;
+  farm_outcome: string;
+  landscape_outcome: string;
+  indicators: string[];
+  data_sources: string[];
+  api_available: boolean;
+}
+
+export interface Regen10Framework {
+  framework: string;
+  version: string;
+  description: string;
+  dimensions: Regen10Dimension[];
+}
+
+// Intervention-to-dimension mapping
+export const INTERVENTION_DIMENSIONS: Record<string, string[]> = {
+  cover_crop: ['d03', 'd04', 'd01', 'd11'],       // Soil, Water, Air & Climate, Agricultural Inputs
+  no_till: ['d03', 'd04', 'd02', 'd01'],           // Soil, Water, Biodiversity, Air & Climate
+  riparian_buffer: ['d04', 'd02', 'd03'],           // Water, Biodiversity, Soil
+  wetland_restoration: ['d04', 'd02', 'd01', 'd07'], // Water, Biodiversity, Air & Climate, Community
+};
+
+// Legacy type aliases for backward compat
 export interface RegenOutcome {
   id: string;
   name: string;
