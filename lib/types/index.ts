@@ -13,6 +13,7 @@ export interface RegionData {
   state?: string;
   crops: Record<string, number>;
   watershedQuality: { good: number; impaired: number; unknown: number };
+  waterDataSource?: 'live' | 'illustrative';
   soilOM: number;
   precipAnomaly: number;
   nitrogenLoading: number;

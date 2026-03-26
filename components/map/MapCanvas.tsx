@@ -59,14 +59,43 @@ export default function MapCanvas() {
           regionLabel = 'Western Region';
         }
 
+        const bounds = { west: bbox[0], south: bbox[1], east: bbox[2], north: bbox[3] };
+
+        // Show mock data immediately so the sidebar appears fast
         setSelectedRegion({
           ...mockBase,
           label: regionLabel,
           areaAcres,
-          bounds: { west: bbox[0], south: bbox[1], east: bbox[2], north: bbox[3] },
+          bounds,
+          waterDataSource: 'illustrative',
         });
 
         map.current?.fitBounds(bbox, { padding: 80, duration: 1000 });
+
+        // Fire live EPA ATTAINS call in the background
+        const bbParam = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`;
+        fetch(`/api/ecological?type=water_quality&boundingBox=${encodeURIComponent(bbParam)}`)
+          .then((res) => res.json())
+          .then((result) => {
+            if (result.source === 'live' && result.data) {
+              const d = result.data;
+              setSelectedRegion({
+                ...mockBase,
+                label: regionLabel,
+                areaAcres,
+                bounds,
+                waterDataSource: 'live',
+                watershedQuality: {
+                  good: d.pct_good ?? mockBase.watershedQuality.good,
+                  impaired: d.pct_impaired ?? mockBase.watershedQuality.impaired,
+                  unknown: 100 - (d.pct_good ?? 0) - (d.pct_impaired ?? 0),
+                },
+              });
+            }
+          })
+          .catch(() => {
+            // Keep mock data on error — already displayed
+          });
       });
     },
     [setSelectedRegion, setDrawnPolygon]

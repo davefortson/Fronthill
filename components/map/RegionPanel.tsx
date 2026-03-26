@@ -48,8 +48,11 @@ export function RegionPanel() {
           <span>~{formatAcres(selectedRegion.areaAcres)} analyzed</span>
           <span>·</span>
           <span className="flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-moss-500 animate-pulse" />
-            Live data
+            <span className={cn(
+              'w-1.5 h-1.5 rounded-full',
+              selectedRegion.waterDataSource === 'live' ? 'bg-moss-500 animate-pulse' : 'bg-earth-400'
+            )} />
+            {selectedRegion.waterDataSource === 'live' ? 'Live data' : 'Loading live data...'}
           </span>
         </div>
       </div>
@@ -66,8 +69,8 @@ export function RegionPanel() {
           label="Water quality"
           value={`${selectedRegion.watershedQuality.impaired}%`}
           unit="impaired"
-          source="EPA ATTAINS"
-          isLive
+          source={selectedRegion.waterDataSource === 'live' ? 'Live · EPA ATTAINS' : 'Illustrative data'}
+          isLive={selectedRegion.waterDataSource === 'live'}
         />
         <MetricCard
           label="Soil OM"
