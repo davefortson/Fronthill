@@ -105,7 +105,7 @@ export default function MapCanvas() {
         controls: { polygon: true, trash: true },
         defaultMode: 'simple_select',
       });
-      map.current.addControl(draw.current, 'top-left');
+      map.current.addControl(draw.current, 'top-right');
 
       map.current.on('load', () => {
         if (!cancelled) {

@@ -16,7 +16,7 @@ export function MetricsOverlay() {
   const { activeOverlays, toggleOverlay } = useAppStore();
 
   return (
-    <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
+    <div className="absolute top-24 right-3 flex flex-col gap-1.5 z-10">
       {OVERLAYS.map((overlay) => {
         const Icon = overlay.icon;
         const active = activeOverlays.includes(overlay.id);
