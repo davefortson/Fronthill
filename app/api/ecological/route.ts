@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { MOCK_UPPER_MIDWEST, MOCK_NORTHERN_PLAINS, MOCK_CENTRAL_VALLEY, MOCK_NATIONAL_SUMMARY } from '@/lib/data/mock';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const region = searchParams.get('region');
@@ -13,10 +15,6 @@ export async function GET(req: NextRequest) {
 
   if (dataType === 'water_quality') {
     const boundingBox = searchParams.get('boundingBox');
-    // Debug: confirm deployment and param parsing
-    if (searchParams.get('debug') === '1') {
-      return NextResponse.json({ version: 'v2-bbox', boundingBox, allParams: Object.fromEntries(searchParams.entries()) });
-    }
     if (boundingBox) {
       return await fetchWaterQualityByBBox(boundingBox);
     }

@@ -74,7 +74,7 @@ export default function MapCanvas() {
 
         // Fire live EPA ATTAINS call in the background
         const bbParam = `${bounds.west},${bounds.south},${bounds.east},${bounds.north}`;
-        fetch(`/api/ecological?type=water_quality&boundingBox=${encodeURIComponent(bbParam)}`)
+        fetch(`/api/ecological?type=water_quality&boundingBox=${encodeURIComponent(bbParam)}&_t=${Date.now()}`)
           .then((res) => res.json())
           .then((result) => {
             if (result.source === 'live' && result.data) {
