@@ -1,11 +1,6 @@
 'use client';
 
 import { useRef, useEffect, useState, useCallback } from 'react';
-import mapboxgl from 'mapbox-gl';
-import MapboxDraw from '@mapbox/mapbox-gl-draw';
-import * as turf from '@turf/turf';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 import { useAppStore } from '@/lib/store';
 import { MOCK_UPPER_MIDWEST } from '@/lib/data/mock';
 import { MetricsOverlay } from './MetricsOverlay';
@@ -29,91 +24,109 @@ const CROP_COLORS: Record<string, string> = {
 
 export default function MapCanvas() {
   const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const draw = useRef<MapboxDraw | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const map = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const draw = useRef<any>(null);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const { setSelectedRegion, setDrawnPolygon, activeOverlays } = useAppStore();
+  const [mapReady, setMapReady] = useState(false);
+  const { setSelectedRegion, setDrawnPolygon, activeOverlays, selectedRegion } = useAppStore();
 
   const handlePolygonCreate = useCallback(
-    (e: { features: GeoJSON.Feature[] }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (e: any) => {
       const polygon = e.features[0];
       if (!polygon || polygon.geometry.type !== 'Polygon') return;
 
-      const area = turf.area(polygon);
-      const areaAcres = Math.round(area / 4047);
-      const bbox = turf.bbox(polygon) as [number, number, number, number];
+      import('@turf/turf').then((turf) => {
+        const area = turf.area(polygon);
+        const areaAcres = Math.round(area / 4047);
+        const bbox = turf.bbox(polygon) as [number, number, number, number];
 
-      setDrawnPolygon(polygon);
+        setDrawnPolygon(polygon);
 
-      // Generate mock region data based on location
-      const centerLng = (bbox[0] + bbox[2]) / 2;
-      const centerLat = (bbox[1] + bbox[3]) / 2;
+        const centerLng = (bbox[0] + bbox[2]) / 2;
+        const centerLat = (bbox[1] + bbox[3]) / 2;
 
-      let regionLabel = 'Custom Region';
-      let mockBase = MOCK_UPPER_MIDWEST;
+        let regionLabel = 'Custom Region';
+        const mockBase = MOCK_UPPER_MIDWEST;
 
-      if (centerLat > 42 && centerLng > -100 && centerLng < -85) {
-        regionLabel = 'Upper Midwest Region';
-      } else if (centerLat > 40 && centerLng < -100) {
-        regionLabel = 'Northern Plains Region';
-      } else if (centerLat < 40 && centerLng < -115) {
-        regionLabel = 'Western Region';
-      }
+        if (centerLat > 42 && centerLng > -100 && centerLng < -85) {
+          regionLabel = 'Upper Midwest Region';
+        } else if (centerLat > 40 && centerLng < -100) {
+          regionLabel = 'Northern Plains Region';
+        } else if (centerLat < 40 && centerLng < -115) {
+          regionLabel = 'Western Region';
+        }
 
-      setSelectedRegion({
-        ...mockBase,
-        label: regionLabel,
-        areaAcres,
-        bounds: { west: bbox[0], south: bbox[1], east: bbox[2], north: bbox[3] },
+        setSelectedRegion({
+          ...mockBase,
+          label: regionLabel,
+          areaAcres,
+          bounds: { west: bbox[0], south: bbox[1], east: bbox[2], north: bbox[3] },
+        });
+
+        map.current?.fitBounds(bbox, { padding: 80, duration: 1000 });
       });
-
-      // Fly to the polygon
-      map.current?.fitBounds(bbox, { padding: 80, duration: 1000 });
     },
     [setSelectedRegion, setDrawnPolygon]
   );
 
   useEffect(() => {
-    if (!mapContainer.current || map.current) return;
+    if (!mapContainer.current || map.current || !MAPBOX_TOKEN) return;
 
-    if (!MAPBOX_TOKEN) {
-      // Token not configured — skip map init
-      return;
-    }
+    let cancelled = false;
 
-    mapboxgl.accessToken = MAPBOX_TOKEN;
+    // Dynamic import to avoid module-level crash when token is missing
+    Promise.all([
+      import('mapbox-gl'),
+      import('@mapbox/mapbox-gl-draw'),
+    ]).then(([mapboxglModule, MapboxDrawModule]) => {
+      if (cancelled || !mapContainer.current) return;
 
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/satellite-streets-v12',
-      center: [-93.5, 41.5],
-      zoom: 5,
-      attributionControl: false,
-    });
+      const mapboxgl = mapboxglModule.default;
+      const MapboxDraw = MapboxDrawModule.default;
 
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-left');
-    map.current.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
+      mapboxgl.accessToken = MAPBOX_TOKEN;
 
-    draw.current = new MapboxDraw({
-      displayControlsDefault: false,
-      controls: { polygon: true, trash: true },
-      defaultMode: 'simple_select',
-    });
-    map.current.addControl(draw.current as unknown as mapboxgl.IControl, 'top-left');
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/satellite-streets-v12',
+        center: [-93.5, 41.5],
+        zoom: 5,
+        attributionControl: false,
+      });
 
-    map.current.on('load', () => {
-      setMapLoaded(true);
-      addCroplandLayer();
-    });
+      map.current.addControl(new mapboxgl.NavigationControl(), 'top-left');
+      map.current.addControl(new mapboxgl.AttributionControl({ compact: true }), 'bottom-left');
 
-    map.current.on('draw.create', handlePolygonCreate);
-    map.current.on('draw.update', handlePolygonCreate);
-    map.current.on('draw.delete', () => {
-      setSelectedRegion(null);
-      setDrawnPolygon(null);
+      draw.current = new MapboxDraw({
+        displayControlsDefault: false,
+        controls: { polygon: true, trash: true },
+        defaultMode: 'simple_select',
+      });
+      map.current.addControl(draw.current, 'top-left');
+
+      map.current.on('load', () => {
+        if (!cancelled) {
+          setMapLoaded(true);
+          setMapReady(true);
+          addCroplandLayer();
+        }
+      });
+
+      map.current.on('draw.create', handlePolygonCreate);
+      map.current.on('draw.update', handlePolygonCreate);
+      map.current.on('draw.delete', () => {
+        setSelectedRegion(null);
+        setDrawnPolygon(null);
+      });
+    }).catch((err) => {
+      console.error('Failed to load map:', err);
     });
 
     return () => {
+      cancelled = true;
       map.current?.remove();
       map.current = null;
     };
@@ -121,8 +134,6 @@ export default function MapCanvas() {
 
   function addCroplandLayer() {
     if (!map.current) return;
-    // Add a simulated cropland overlay using fill-extrusion for visual effect
-    // In production, this would use real USDA CropScape tiles
     const states = [
       { id: 'iowa', center: [-93.5, 42.0], crop: 'corn' },
       { id: 'illinois', center: [-89.4, 40.0], crop: 'corn' },
@@ -229,8 +240,14 @@ export default function MapCanvas() {
     <div className="relative w-full h-full">
       <div ref={mapContainer} className="w-full h-full" />
 
+      {!mapReady && (
+        <div className="absolute inset-0 bg-earth-800 flex items-center justify-center">
+          <div className="text-earth-400 text-sm animate-pulse">Loading map...</div>
+        </div>
+      )}
+
       {/* Draw prompt */}
-      {mapLoaded && !useAppStore.getState().selectedRegion && (
+      {mapLoaded && !selectedRegion && (
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-earth-800/90 text-white px-5 py-2.5 rounded-full text-sm font-medium backdrop-blur-sm flex items-center gap-2 pointer-events-none">
           <svg className="w-4 h-4 text-moss-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />

@@ -4,6 +4,8 @@ import dynamic from 'next/dynamic';
 import { useAppStore } from '@/lib/store';
 import { RegionPanel } from '@/components/map/RegionPanel';
 import { NationalSummary } from '@/components/dashboard/NationalSummary';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css';
 
 const MapCanvas = dynamic(() => import('@/components/map/MapCanvas'), {
   ssr: false,
