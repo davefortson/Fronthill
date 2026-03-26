@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+:root {
+  --color-earth-900: #1C1A14;
+  --color-earth-800: #2D2B1F;
+  --color-earth-700: #4A4630;
+  --color-earth-600: #6B6550;
+  --color-earth-500: #8A8470;
+  --color-earth-400: #A9A390;
+  --color-earth-300: #C8C2B0;
+  --color-earth-200: #E7E1D0;
+  --color-earth-100: #F5F2EA;
+  --color-earth-50: #FAFAF6;
+  --color-moss-600: #3B6D11;
+  --color-moss-500: #4E8A1A;
+  --color-moss-400: #6BA530;
+  --color-moss-300: #8EC050;
+  --color-moss-200: #B5D98A;
+  --color-moss-100: #EAF3DE;
+  --color-soil-600: #8B5E3C;
+  --color-soil-500: #A67448;
+  --color-water-600: #185FA5;
+  --color-water-500: #2070C0;
+  --color-water-400: #3A8ADA;
+  --color-amber-500: #BA7517;
+  --color-amber-400: #D4901F;
+  --color-red-500: #C53030;
+  --color-red-400: #E53E3E;
+}
+
+@theme inline {
+  --color-background: var(--color-earth-50);
+  --color-foreground: var(--color-earth-900);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-earth-900: var(--color-earth-900);
+  --color-earth-800: var(--color-earth-800);
+  --color-earth-700: var(--color-earth-700);
+  --color-earth-600: var(--color-earth-600);
+  --color-earth-500: var(--color-earth-500);
+  --color-earth-400: var(--color-earth-400);
+  --color-earth-300: var(--color-earth-300);
+  --color-earth-200: var(--color-earth-200);
+  --color-earth-100: var(--color-earth-100);
+  --color-earth-50: var(--color-earth-50);
+  --color-moss-600: var(--color-moss-600);
+  --color-moss-500: var(--color-moss-500);
+  --color-moss-400: var(--color-moss-400);
+  --color-moss-300: var(--color-moss-300);
+  --color-moss-200: var(--color-moss-200);
+  --color-moss-100: var(--color-moss-100);
+  --color-soil-600: var(--color-soil-600);
+  --color-soil-500: var(--color-soil-500);
+  --color-water-600: var(--color-water-600);
+  --color-water-500: var(--color-water-500);
+  --color-water-400: var(--color-water-400);
+  --color-amber-500: var(--color-amber-500);
+  --color-amber-400: var(--color-amber-400);
+  --color-red-500: var(--color-red-500);
+  --color-red-400: var(--color-red-400);
+}
+
+body {
+  background: var(--color-earth-50);
+  color: var(--color-earth-900);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+/* Mapbox overrides */
+.mapboxgl-ctrl-group {
+  background: var(--color-earth-800) !important;
+  border-radius: 8px !important;
+}
+.mapboxgl-ctrl-group button {
+  border-color: var(--color-earth-700) !important;
+}
+.mapboxgl-ctrl-group button + button {
+  border-top-color: var(--color-earth-700) !important;
+}
+
+/* Streaming AI cursor animation */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+.ai-cursor::after {
+  content: '▋';
+  animation: blink 1s infinite;
+  color: var(--color-moss-500);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-earth-100);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-earth-400);
+  border-radius: 3px;
+}
