@@ -13,6 +13,10 @@ export async function GET(req: NextRequest) {
 
   if (dataType === 'water_quality') {
     const boundingBox = searchParams.get('boundingBox');
+    // Debug: confirm deployment and param parsing
+    if (searchParams.get('debug') === '1') {
+      return NextResponse.json({ version: 'v2-bbox', boundingBox, allParams: Object.fromEntries(searchParams.entries()) });
+    }
     if (boundingBox) {
       return await fetchWaterQualityByBBox(boundingBox);
     }
