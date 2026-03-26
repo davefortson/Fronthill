@@ -8,11 +8,6 @@ export async function GET(req: NextRequest) {
   const region = searchParams.get('region');
   const dataType = searchParams.get('type') || 'summary';
 
-  // Version check — remove after confirming deployment
-  if (searchParams.get('v') === '1') {
-    return NextResponse.json({ deployed: true, sha: '3374160-v3', boundingBox: searchParams.get('boundingBox') });
-  }
-
   // Try live data first, fall back to mock
   if (dataType === 'crop_acreage') {
     return await fetchCropAcreage(searchParams.get('state') || undefined);
