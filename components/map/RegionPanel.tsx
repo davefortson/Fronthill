@@ -69,7 +69,7 @@ export function RegionPanel() {
           label="Water quality"
           value={`${selectedRegion.watershedQuality.impaired}%`}
           unit="impaired"
-          source={selectedRegion.waterDataSource === 'live' ? 'Live · EPA ATTAINS' : 'Illustrative data'}
+          source="EPA ATTAINS"
           isLive={selectedRegion.waterDataSource === 'live'}
         />
         <MetricCard
