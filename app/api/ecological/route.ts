@@ -85,7 +85,7 @@ async function fetchWaterQualityByBBox(boundingBox: string) {
       `where=1%3D1&geometry=${encodeURIComponent(geom)}&geometryType=esriGeometryEnvelope` +
       `&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=huc12&returnGeometry=false&f=json&resultRecordCount=25`;
 
-    const wbdRes = await fetch(wbdUrl, { next: { revalidate: 604800 } });
+    const wbdRes = await fetch(wbdUrl, { cache: 'no-store' });
     if (!wbdRes.ok) throw new Error('WBD request failed');
 
     const wbdData = await wbdRes.json();
@@ -99,7 +99,7 @@ async function fetchWaterQualityByBBox(boundingBox: string) {
     const summaries = await Promise.allSettled(
       sample.map((huc) =>
         fetch(`https://attains.epa.gov/attains-public/api/huc12summary?huc=${huc}`, {
-          next: { revalidate: 604800 },
+          cache: 'no-store',
         }).then((r) => r.ok ? r.json() : null)
       )
     );

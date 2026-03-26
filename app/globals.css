@@ -66,16 +66,36 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
-/* Mapbox overrides */
+/* Mapbox overrides — controls visible on satellite imagery */
 .mapboxgl-ctrl-group {
-  background: var(--color-earth-800) !important;
+  background: rgba(255, 255, 255, 0.95) !important;
   border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
 .mapboxgl-ctrl-group button {
-  border-color: var(--color-earth-700) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
 }
 .mapboxgl-ctrl-group button + button {
-  border-top-color: var(--color-earth-700) !important;
+  border-top-color: rgba(0, 0, 0, 0.1) !important;
+}
+.mapboxgl-ctrl-group button:hover {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Draw control buttons — ensure icons are dark on light background */
+.mapbox-gl-draw_ctrl-draw-btn {
+  width: 36px !important;
+  height: 36px !important;
+  filter: none !important;
+}
+.mapbox-gl-draw_ctrl-draw-btn.active,
+.mapbox-gl-draw_ctrl-draw-btn.active:hover {
+  background-color: var(--color-moss-100) !important;
+}
+
+/* Navigation control icons — ensure visible */
+.mapboxgl-ctrl-group button .mapboxgl-ctrl-icon {
+  filter: none !important;
 }
 
 /* Streaming AI cursor animation */
