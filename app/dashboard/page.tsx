@@ -5,7 +5,8 @@ import { EcologicalModule } from '@/components/dashboard/EcologicalModule';
 import { PipelineModule } from '@/components/dashboard/PipelineModule';
 import { InvestorModule } from '@/components/dashboard/InvestorModule';
 import { ChatDrawer } from '@/components/shared/ChatDrawer';
-import { MessageCircle, Leaf, Briefcase, Users } from 'lucide-react';
+import { DashboardTour } from '@/components/tour/DashboardTour';
+import { MessageCircle, Leaf, Briefcase, Users, PlayCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const TABS = [
@@ -15,7 +16,7 @@ const TABS = [
 ];
 
 export default function DashboardPage() {
-  const { activeTab, setActiveTab, chatOpen, setChatOpen } = useAppStore();
+  const { activeTab, setActiveTab, chatOpen, setChatOpen, startTour } = useAppStore();
 
   return (
     <div className="h-screen flex flex-col overflow-hidden">
@@ -36,6 +37,7 @@ export default function DashboardPage() {
             return (
               <button
                 key={tab.id}
+                data-tour={`tab-${tab.id}`}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
                   'px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2 transition-colors',
@@ -51,11 +53,19 @@ export default function DashboardPage() {
           })}
         </nav>
 
-        <div className="w-32" /> {/* Spacer for balance */}
+        <div className="flex items-center justify-end w-32">
+          <button
+            onClick={() => startTour()}
+            className="text-xs text-earth-400 hover:text-white flex items-center gap-1 transition-colors"
+          >
+            <PlayCircle size={12} />
+            Take the tour
+          </button>
+        </div>
       </header>
 
       {/* Main content */}
-      <main className="flex-1 overflow-hidden">
+      <main className="flex-1 overflow-hidden" data-tour="map-panel">
         {activeTab === 'ecological' && <EcologicalModule />}
         {activeTab === 'pipeline' && <PipelineModule />}
         {activeTab === 'investors' && <InvestorModule />}
@@ -63,6 +73,7 @@ export default function DashboardPage() {
 
       {/* Chat FAB */}
       <button
+        data-tour="chat-fab"
         onClick={() => setChatOpen(!chatOpen)}
         className={cn(
           'fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all',
@@ -76,6 +87,9 @@ export default function DashboardPage() {
 
       {/* Chat Drawer */}
       <ChatDrawer />
+
+      {/* Dashboard Tour */}
+      <DashboardTour />
     </div>
   );
 }

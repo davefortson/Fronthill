@@ -3,6 +3,18 @@ import type { RegionData, DashboardTab, MapOverlay, PipelineProject } from '@/li
 import { MOCK_UPPER_MIDWEST } from '@/lib/data/mock';
 
 interface AppState {
+  // Tour
+  tourActive: boolean;
+  currentStep: number;
+  tourCompleted: boolean;
+  setTourActive: (active: boolean) => void;
+  setCurrentStep: (step: number) => void;
+  setTourCompleted: (completed: boolean) => void;
+  startTour: () => void;
+  nextStep: () => void;
+  prevStep: () => void;
+  endTour: () => void;
+
   // Dashboard
   activeTab: DashboardTab;
   setActiveTab: (tab: DashboardTab) => void;
@@ -35,7 +47,41 @@ interface AppState {
   loadPresetRegion: (region: RegionData) => void;
 }
 
-export const useAppStore = create<AppState>((set) => ({
+const TOUR_TOTAL_STEPS = 7;
+
+export const useAppStore = create<AppState>((set, get) => ({
+  // Tour
+  tourActive: false,
+  currentStep: 0,
+  tourCompleted: false,
+  setTourActive: (active) => set({ tourActive: active }),
+  setCurrentStep: (step) => set({ currentStep: step }),
+  setTourCompleted: (completed) => set({ tourCompleted: completed }),
+  startTour: () => set({ tourActive: true, currentStep: 0 }),
+  nextStep: () => {
+    const { currentStep } = get();
+    const next = currentStep + 1;
+    if (next >= TOUR_TOTAL_STEPS) {
+      set({ tourActive: false, tourCompleted: true, currentStep: 0 });
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('fronthill_tour_completed', 'true');
+      }
+    } else {
+      set({ currentStep: next });
+    }
+  },
+  prevStep: () => {
+    const { currentStep } = get();
+    if (currentStep > 0) set({ currentStep: currentStep - 1 });
+  },
+  endTour: () => {
+    set({ tourActive: false, tourCompleted: true, currentStep: 0 });
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('fronthill_tour_completed', 'true');
+    }
+  },
+
+  // Dashboard
   activeTab: 'ecological',
   setActiveTab: (tab) => set({ activeTab: tab }),
 
