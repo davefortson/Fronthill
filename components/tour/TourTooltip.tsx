@@ -64,9 +64,12 @@ function computeTooltipStyle(
       break;
   }
 
-  // Clamp to viewport
+  // Estimated tooltip height — generous upper bound so we never clip the bottom
+  const TOOLTIP_MAX_HEIGHT = 260;
+
+  // Clamp to viewport — both axes, both edges
   left = Math.max(16, Math.min(left, vw - TOOLTIP_WIDTH - 16));
-  top = Math.max(16, top);
+  top = Math.max(16, Math.min(top, vh - TOOLTIP_MAX_HEIGHT - 16));
 
   return {
     position: 'fixed',
